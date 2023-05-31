@@ -9,10 +9,10 @@ import { NgForm } from '@angular/forms'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public employees: Employee[] = [];
+  public employees!: Employee[];
   public editEmployee!: Employee;
   public deleteEmployee!: Employee;
-
+  
 
 
   constructor(private employeeService: EmployeeService) {}
@@ -21,53 +21,65 @@ export class AppComponent implements OnInit {
     this.getEmployees();
   }
 
+  // public getEmployees() : void {
+  //   this.employeeService.getEmployees().subscribe(
+  //     (response: Employee[]) => {
+  //       this.employees = response;
+  //     },
+  //     (error: HttpErrorResponse) => {
+  //       alert(error.message);
+  //     }
+  //     );
+  // }
   public getEmployees() : void {
     this.employeeService.getEmployees().subscribe(
-      (response: Employee[]) => {
+    {
+      next:(response: Employee[]) => {
         this.employees = response;
       },
-      (error: HttpErrorResponse) => {
+      error:(error:HttpErrorResponse) => {
         alert(error.message);
       }
-      );
-  } 
+    })
+  }  
 
   public onAddEmloyee(addForm: NgForm): void {
     document.getElementById('add-employee-form')!.click();
     this.employeeService.addEmployee(addForm.value).subscribe(
-      (response: Employee) => {
+      {next:(response: Employee) => {
         console.log(response);
         this.getEmployees();
         addForm.reset();
       },
-      (error: HttpErrorResponse) => {
+      error:(error: HttpErrorResponse) => {
         alert(error.message);
         addForm.reset();
       }
+    }
     );
   }
 
   public onUpdateEmloyee(employee: Employee): void {
     this.employeeService.updateEmployee(employee).subscribe(
-      (response: Employee) => {
+      {next:(response: Employee) => {
         console.log(response);
         this.getEmployees();
       },
-      (error: HttpErrorResponse) => {
+      error:(error: HttpErrorResponse) => {
         alert(error.message);
-      }
+      }}
     );
   }
 
   public onDeleteEmloyee(employeeId: number): void {
     this.employeeService.deleteEmployee(employeeId).subscribe(
-      (response: void) => {
+      {next:(response: void) => {
         console.log(response);
         this.getEmployees();
       },
-      (error: HttpErrorResponse) => {
+      error:(error: HttpErrorResponse) => {
         alert(error.message);
-      }
+      }}
     );
   }
 
